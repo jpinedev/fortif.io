@@ -1,0 +1,24 @@
+{
+  "name": "fortif.io",
+  "version": "1.0.0",
+  "description": "Multiplayer Fortress building/defending game made with NodeJS.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpinedev/fortif.io.git"
+  },
+  "author": "Jacob Pine",
+  "license": "SEE LICENSE IN \"LICENSE\"",
+  "bugs": {
+    "url": "https://github.com/jpinedev/fortif.io/issues"
+  },
+  "homepage": "https://github.com/jpinedev/fortif.io#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
