@@ -11,7 +11,7 @@ Can destroy in enemy land.
 - Flags
     - [ ] Basic Flag - radius: 3
     - [ ] Improved Flag - radius: 5
-    - [ ] Advanced Flag - radius: 9
+    - [ ] Advanced Flag - radius: 7
 - Walls
     - [ ] Basic Walls - Hitpoints: 5
     - [ ] Improved Walls - radius: 10
@@ -26,3 +26,8 @@ Can destroy in enemy land.
     - [ ] With Tool
     - [ ] Automation
 - [ ] Material Inventory
+- Assault
+    - [ ] Grenades: area damage
+    - [ ] Cannons: wall breaking
+    - [ ] Catapults: over wall damage
+    - [ ] Missiles: over wall area damage
