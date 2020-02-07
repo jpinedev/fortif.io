@@ -9,9 +9,9 @@ Can destroy in enemy land.
 
 ## Features
 - Flags
-    - [ ] Basic Flag - radius: 3
-    - [ ] Improved Flag - radius: 5
-    - [ ] Advanced Flag - radius: 7
+    - [x] Basic Flag - radius: 3
+    - [x] Improved Flag - radius: 5
+    - [x] Advanced Flag - radius: 7
 - Walls
     - [ ] Basic Walls - Hitpoints: 5
     - [ ] Improved Walls - radius: 10
