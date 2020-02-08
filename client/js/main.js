@@ -7,6 +7,7 @@ let name;
 let user = {};
 let world = {};
 let worldSize = {};
+let newEntities = [];
 
 let colorMap = {};
 
@@ -17,17 +18,39 @@ socket.on('load-user', (userName, userInfo) => {
     name = userName;
     user = userInfo;
     dispName.innerHTML = name;
-    console.table(user);
     socket.emit('init-world');
 });
-socket.on('init-world', (worldInfo, worldState) => {
+socket.on('init-world', (worldInfo, worldState, serverColorMap) => {
     world = worldState;
     worldSize = worldInfo;
-    console.log(world);
-    world.players.forEach((player) => {
-        colorMap[player.name] = player.color;
-    });
+    colorMap = serverColorMap;
     init();
+});
+socket.on('ping-players', (users, serverColorMap) => {
+    let tempWorld = {
+        players: [],
+        flags: []
+    };
+    Object.keys(users).forEach((name) => {
+        const player = users[name];
+        tempWorld.players.push({
+            name: name,
+            color: player.color,
+            pos: player.pos,
+            online: player.online
+        });
+        player.flags.forEach((flag) => {
+            tempWorld.flags.push({
+                player: name,
+                level: flag.level,
+                pos: flag.pos
+            });
+        });
+    });
+    colorMap = serverColorMap;
+    world = tempWorld;
+    socket.emit('pong-player', user, name, newEntities);
+    newEntities = [];
 });
 
 function init() {
@@ -49,4 +72,12 @@ function update() {
 
     drawPlayer(c, user.pos, user.color, name)
     requestAnimationFrame(update);
+}
+
+function addFlag(level, x, y) {
+    const flag = {
+        level: level,
+        pos: {x: x, y: y}
+    };
+    user.flags.push(flag);
 }

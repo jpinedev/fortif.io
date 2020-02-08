@@ -4,6 +4,7 @@ let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
 let users = {};
+let colorMap = {};
 let worldSize = { width: 64, height: 64 };
 
 app.use(express.static(__dirname + '/client'));
@@ -20,22 +21,40 @@ io.on('connection', function(socket){
 
     socket.on('register-user', (name) => {
         if(!users[name]) {
+            const color = '#' +
+                Math.trunc(Math.random()*155+100).toString(16) +
+                Math.trunc(Math.random()*155+100).toString(16) +
+                Math.trunc(Math.random()*155+100).toString(16);
+            colorMap[name] = color;
             users[name] = {
                 pos: { x: 0, y: 0 },
-                color: '#'+Math.trunc(Math.random()*155+100).toString(16)+Math.trunc(Math.random()*155+100).toString(16)+Math.trunc(Math.random()*155+100).toString(16),
-                flags: []
+                color: color,
+                flags: [],
+                online: true
             };
         }
         socket.emit('load-user', name, users[name]);
     });
 
     socket.on('init-world', () => {
-        socket.emit('init-world', worldSize, getWorldState());
+        socket.emit('init-world', worldSize, getWorldState(), colorMap);
+    });
+
+    socket.on('pong-player', (player, name, newEntities) => {
+        if(name) {
+            users[name] = player;
+            newEntities.forEach(entity => {
+                users[name][entity.kind].push(entity.entity);
+            });
+        }
     });
 });
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
+  setInterval(() => {
+      io.emit('ping-players', users, colorMap);
+  }, 33);
 });
 
 function getWorldState() {
@@ -48,7 +67,8 @@ function getWorldState() {
         worldState.players.push({
             name: name,
             color: user.color,
-            pos: user.pos
+            pos: user.pos,
+            online: user.online
         });
         user.flags.forEach((flag) => {
             worldState.flags.push({

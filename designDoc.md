@@ -26,6 +26,10 @@ Can destroy in enemy land.
     - [ ] With Tool
     - [ ] Automation
 - [ ] Material Inventory
+- Building
+    - [ ] Flags
+    - [ ] Walls
+    - [ ] Turrets
 - Assault
     - [ ] Grenades: area damage
     - [ ] Cannons: wall breaking
