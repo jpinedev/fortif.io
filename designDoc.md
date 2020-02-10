@@ -13,13 +13,13 @@ Can destroy in enemy land.
     - [x] Improved Flag - radius: 5
     - [x] Advanced Flag - radius: 7
 - Walls
-    - [ ] Basic Walls - Hitpoints: 5
-    - [ ] Improved Walls - radius: 10
-    - [ ] Advanced Walls - radius: 18
+    - [x] Basic Walls - hp: 5
+    - [x] Improved Walls - hp: 10
+    - [x] Advanced Walls - hp: 18
 - Turrets
-    - [ ] Basic Turret - radius: 6
+    - [x] Basic Turret - radius: 6
     - [ ] Shooting Speed Upgrade
-    - [ ] Range Upgrade - radius: +3
+    - [x] Range Upgrade - radius: +3
     - [ ] Laser Precision Upgrade
 - Harvesting
     - [ ] By Hand

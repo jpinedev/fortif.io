@@ -30,6 +30,8 @@ io.on('connection', function(socket){
                 pos: { x: 0, y: 0 },
                 color: color,
                 flags: [],
+                walls: [],
+                turrets: [],
                 online: true
             };
         }
@@ -60,7 +62,9 @@ http.listen(3000, function(){
 function getWorldState() {
     let worldState = {
         players: [],
-        flags: []
+        flags: [],
+        walls: [],
+        turrets: []
     };
     Object.keys(users).forEach((name) => {
         const user = users[name];
@@ -75,6 +79,26 @@ function getWorldState() {
                 player: name,
                 level: flag.level,
                 pos: flag.pos
+            });
+        })
+        user.walls.forEach((wall) => {
+            worldState.walls.push({
+                player: name,
+                level: wall.level,
+                pos: wall.pos,
+                hpMax: wall.hpMax,
+                hp: wall.hp 
+            });
+        })
+        user.turrets.forEach((turret) => {
+            worldState.turrets.push({
+                player: name,
+                pos: turret.pos,
+                upgrades: turret.upgrades,
+                range: turret.range,
+                angle: turret.angle,
+                hpMax: turret.hpMax,
+                hp: turret.hp 
             });
         });
     });
