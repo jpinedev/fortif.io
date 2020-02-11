@@ -25,7 +25,7 @@ socket.on('init-world', (worldInfo, worldState, serverColorMap) => {
     world = worldState;
     worldSize = worldInfo;
     colorMap = serverColorMap;
-    init();
+    gameEngine.init();
 });
 socket.on('ping-players', (users, serverColorMap) => {
     colorMap = serverColorMap;
@@ -33,35 +33,6 @@ socket.on('ping-players', (users, serverColorMap) => {
     socket.emit('pong-player', user, name, newEntities);
     newEntities = [];
 });
-
-function init() {
-    canvas.width = worldSize.width * tileSize;
-    canvas.height = worldSize.height * tileSize;
-    update();
-}
-
-function update() {
-    c.clearRect(0, 0, canvas.width, canvas.height);
-
-    world.players.forEach(player => {
-        if(player.name != name) drawPlayer(c, player.pos, player.color, player.name);
-    });
-
-    world.flags.forEach(flag => {
-        drawFlag(c, flag.pos, flag.level, colorMap[flag.player], flag.player);
-    });
-
-    world.walls.forEach(wall => {
-        drawWall(c, wall.pos, wall.level, colorMap[wall.player], wall.hpMax, wall.hp);
-    });
-
-    world.turrets.forEach(turret => {
-        drawTurret(c, turret.pos, colorMap[turret.player], turret.upgrades, turret.range, turret.angle);
-    });
-
-    drawPlayer(c, user.pos, user.color, name)
-    requestAnimationFrame(update);
-}
 
 function addFlag(level, x, y) {
     const flag = {
@@ -107,6 +78,7 @@ function updateWorld(users) {
             name: name,
             color: player.color,
             pos: player.pos,
+            vel: player.vel,
             online: player.online
         });
         player.flags.forEach((flag) => {
@@ -139,3 +111,20 @@ function updateWorld(users) {
     });
     return tempWorld;
 }
+
+document.addEventListener('keydown', event => {
+    gameEngine.keyDownHandler(event.code);
+});
+document.addEventListener('keyup', event => {
+    gameEngine.keyUpHandler(event.code);
+});
+document.addEventListener('keypress', event => {
+    gameEngine.keyPressHandler(event.code);
+});
+
+canvas.addEventListener('click', () => {
+    // if (click on ui)
+
+    // else (place an object)
+
+});

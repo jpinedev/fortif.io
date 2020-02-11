@@ -28,6 +28,7 @@ io.on('connection', function(socket){
             colorMap[name] = color;
             users[name] = {
                 pos: { x: 0, y: 0 },
+                vel: { x: 0, y: 0 },
                 color: color,
                 flags: [],
                 walls: [],
@@ -72,6 +73,7 @@ function getWorldState() {
             name: name,
             color: user.color,
             pos: user.pos,
+            vel: user.vel,
             online: user.online
         });
         user.flags.forEach((flag) => {
