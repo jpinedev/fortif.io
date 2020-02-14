@@ -3,41 +3,26 @@ const PI2 = Math.PI * 2;
 function drawPlayer(c, pos, color, name) {
     c.fillStyle = color;
     c.beginPath();
-    c.arc((pos.x+.5) * tileSize, (pos.y+.5) * tileSize, halfTile, 0, PI2);
+    c.arc(pos.x * tileSize, pos.y * tileSize, halfTile, 0, PI2);
     c.closePath();
     c.fill();
     drawNametag(c, pos, name);
 }
 
-function drawFlag(c, pos, level, color, name) {
+function drawFlag(c, pos, color, name, mouse) {
     c.fillStyle = color;
     c.fillRect(pos.x * tileSize, pos.y * tileSize, tileSize, tileSize);
-    c.globalAlpha = 0.2;
-    switch(level) {
-        case 0:
-            c.fillRect((pos.x - 1) * tileSize, (pos.y - 2) * tileSize, 3 * tileSize, 5 * tileSize);
-            c.fillRect((pos.x - 2) * tileSize, (pos.y - 1) * tileSize, tileSize, 3 * tileSize);
-            c.fillRect((pos.x + 2) * tileSize, (pos.y - 1) * tileSize, tileSize, 3 * tileSize);
-            break;
-        case 1:
-            c.fillRect((pos.x - 3) * tileSize, (pos.y - 3) * tileSize, 7 * tileSize, 7 * tileSize);
-            c.fillRect((pos.x - 2) * tileSize, (pos.y - 4) * tileSize, 5 * tileSize, tileSize);
-            c.fillRect((pos.x + 4) * tileSize, (pos.y - 2) * tileSize, tileSize, 5 * tileSize);
-            c.fillRect((pos.x - 2) * tileSize, (pos.y + 4) * tileSize, 5 * tileSize, tileSize);
-            c.fillRect((pos.x - 4) * tileSize, (pos.y - 2) * tileSize, tileSize, 5 * tileSize);
-            break;
-        case 2:
-            c.fillRect((pos.x - 2) * tileSize, (pos.y - 6) * tileSize, 5 * tileSize, tileSize);
-            c.fillRect((pos.x - 4) * tileSize, (pos.y - 5) * tileSize, 9 * tileSize, tileSize);
-            c.fillRect((pos.x - 5) * tileSize, (pos.y - 4) * tileSize, 11 * tileSize, 2 * tileSize);
-            c.fillRect((pos.x - 6) * tileSize, (pos.y - 2) * tileSize, 13 * tileSize, 5 * tileSize);
-            c.fillRect((pos.x - 5) * tileSize, (pos.y + 3) * tileSize, 11 * tileSize, 2 * tileSize);
-            c.fillRect((pos.x - 4) * tileSize, (pos.y + 5) * tileSize, 9 * tileSize, tileSize);
-            c.fillRect((pos.x - 2) * tileSize, (pos.y + 6) * tileSize, 5 * tileSize, tileSize);
-            break;
-    }
+    if(pos.x == mouse.x && pos.y == mouse.y) drawNameplate(c, pos, name);
+}
+
+function drawTile(c, x, y, players) {
+    const len = players.length + 4;
+    c.globalAlpha = 1 / len;
+    players.forEach(player => {
+        c.fillStyle = colorMap[player];
+        c.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+    });
     c.globalAlpha = 1;
-    drawNameplate(c, pos, name);
 }
 
 function drawWall(c, pos, level, color, hpMax, hp) {
@@ -60,16 +45,18 @@ function drawWall(c, pos, level, color, hpMax, hp) {
     c.fillRect((pos.x + .25) * tileSize, (pos.y + .25) * tileSize + halfTile - height, halfTile, height);
 }
 
-function drawTurret(c, pos, color, upgrades, range, angle) {
+function drawTurret(c, pos, color, upgrades, range, angle, mouse) {
     const turretColor = getTurretColor(upgrades);
 
-    c.strokeStyle = color;
-    c.fillStyle = '#ff000033';
-    c.beginPath();
-    c.arc((pos.x + .5) * tileSize, (pos.y + .5) * tileSize, range * tileSize, 0, PI2);
-    c.closePath();
-    c.fill();
-    c.stroke();
+    if(pos.x == mouse.x && pos.y == mouse.y) {
+        c.strokeStyle = color;
+        c.fillStyle = '#ff000033';
+        c.beginPath();
+        c.arc((pos.x + .5) * tileSize, (pos.y + .5) * tileSize, range * tileSize, 0, PI2);
+        c.closePath();
+        c.fill();
+        c.stroke();
+    }
 
     c.strokeStyle = turretColor;
     c.beginPath();
@@ -96,7 +83,7 @@ function drawNametag(c, pos, name) {
     c.lineWidth = 3;
     c.textAlign = 'center';
     //c.strokeText(name, (pos.x + .5) * tileSize, (pos.y - .25) * tileSize);
-    c.fillText(name, (pos.x + .5) * tileSize, (pos.y - .25) * tileSize);
+    c.fillText(name, pos.x * tileSize, (pos.y - .75) * tileSize);
 }
 
 function drawNameplate(c, pos, name) {

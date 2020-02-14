@@ -21,6 +21,10 @@ socket.on('load-user', (userName, userInfo) => {
     dispName.innerHTML = name;
     socket.emit('init-world');
 });
+socket.on('failed-load-user', (msg) => {
+    alert(msg);
+    socket.emit('register-user', prompt('Enter your username: '));
+});
 socket.on('init-world', (worldInfo, worldState, serverColorMap) => {
     world = worldState;
     worldSize = worldInfo;
@@ -33,6 +37,12 @@ socket.on('ping-players', (users, serverColorMap) => {
     socket.emit('pong-player', user, name, newEntities);
     newEntities = [];
 });
+socket.on('login', (player) => {
+    console.log(player + ' joined the game.');
+});
+socket.on('logout', (player) => {
+    console.log(player + ' left the game.');
+});
 
 function addFlag(level, x, y) {
     const flag = {
@@ -40,6 +50,7 @@ function addFlag(level, x, y) {
         pos: {x: x, y: y}
     };
     user.flags.push(flag);
+    claimTiles(level, x, y);
 }
 function addWall(level, x, y) {
     const maxWallHP = getMaxWallHP(level);
@@ -70,17 +81,20 @@ function updateWorld(users) {
         players: [],
         flags: [],
         walls: [],
-        turrets: []
+        turrets: [],
+        claimedTiles: {}
     };
     Object.keys(users).forEach((name) => {
         const player = users[name];
-        tempWorld.players.push({
-            name: name,
-            color: player.color,
-            pos: player.pos,
-            vel: player.vel,
-            online: player.online
-        });
+        if(player.online) {
+            tempWorld.players.push({
+                name: name,
+                color: player.color,
+                pos: player.pos,
+                vel: player.vel,
+                online: player.online
+            });
+        }
         player.flags.forEach((flag) => {
             tempWorld.flags.push({
                 player: name,
@@ -108,6 +122,11 @@ function updateWorld(users) {
                 hp: turret.hp 
             });
         });
+        player.tiles.forEach((tile) => {
+            const key = (tile.y * worldSize.height + tile.x).toString();
+            if(!tempWorld.claimedTiles[key]) tempWorld.claimedTiles[key] = [name];
+            else tempWorld.claimedTiles[key].push(name);
+        });
     });
     return tempWorld;
 }
@@ -122,9 +141,16 @@ document.addEventListener('keypress', event => {
     gameEngine.keyPressHandler(event.code);
 });
 
+const clientRect = canvas.getBoundingClientRect();
 canvas.addEventListener('click', () => {
     // if (click on ui)
 
     // else (place an object)
 
+});
+canvas.addEventListener('mousemove', event => {
+    const rawMX = event.clientX - clientRect.left;
+    const rawMY = event.clientY - clientRect.top;
+    gameEngine.mouse.x = Math.floor(rawMX / tileSize);
+    gameEngine.mouse.y = Math.floor(rawMY / tileSize);
 });

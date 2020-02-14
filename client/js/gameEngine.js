@@ -12,6 +12,7 @@ let keys = {
 
 let gameEngine = {
     start: Date.now(),
+    mouse: {x: 0, y: 0},
     init() {
         canvas.width = worldSize.width * tileSize;
         canvas.height = worldSize.height * tileSize;
@@ -43,9 +44,16 @@ let gameEngine = {
     },
     render() {
         c.clearRect(0, 0, canvas.width, canvas.height);
+
+        Object.keys(world.claimedTiles).forEach(key => {
+            const raw = parseInt(key);
+            const x = raw % 64;
+            const y = Math.trunc(raw / 64);
+            drawTile(c, x, y, world.claimedTiles[key]);
+        });
     
         world.flags.forEach(flag => {
-            drawFlag(c, flag.pos, flag.level, colorMap[flag.player], flag.player);
+            drawFlag(c, flag.pos, colorMap[flag.player], flag.player, gameEngine.mouse);
         });
     
         world.walls.forEach(wall => {
@@ -53,7 +61,7 @@ let gameEngine = {
         });
     
         world.turrets.forEach(turret => {
-            drawTurret(c, turret.pos, colorMap[turret.player], turret.upgrades, turret.range, turret.angle);
+            drawTurret(c, turret.pos, colorMap[turret.player], turret.upgrades, turret.range, turret.angle, gameEngine.mouse);
         });
 
         world.players.forEach(player => {

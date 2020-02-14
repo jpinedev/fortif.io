@@ -30,6 +30,7 @@ Can destroy in enemy land.
     - [ ] Flags
     - [ ] Walls
     - [ ] Turrets
+    - [ ] Repair Damaged Buildings
 - Assault
     - [ ] Grenades: area damage
     - [ ] Cannons: wall breaking
